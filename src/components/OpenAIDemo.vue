@@ -37,7 +37,8 @@
     <el-row class="input-row" justify="center">
       <el-col :span="12">
         <el-form label-width="auto">
-          <el-form-item label="ApiKey">
+          <span class="header-title-text">ApiKey：</span>
+          <el-form-item label="" style="margin-top:10px">
             <el-input v-model="api_key" placeholder="请输入秘钥" show-password type="password"></el-input>
           </el-form-item>
           <template v-if="!isHasMessage">
@@ -47,7 +48,7 @@
                 <span class="header-desc-text margin-bottom-10">给模型定下一些规则，设定助手的行为。</span>
                 <el-input type="textarea" v-model="systemRoleContent.content"
                   placeholder="请输入～" rows="2"
-                  class="margin-bottom-10"></el-input>
+                  class="margin-bottom-10 input-text"></el-input>
                 <el-button type="success" @click="addSystemRole">设置</el-button>
                 <el-button @click="isShowSystemRoleRule = false">取消</el-button>
               </div>
@@ -61,27 +62,21 @@
           </template>
 
           <el-form-item>
-            <el-col :span="16">
-              <el-input type="textarea" v-model="inputText" :disabled="isShowSystemRoleRule"
-                placeholder="请输入查询内容" rows="2"></el-input>
-            </el-col>
-
-            <el-col :span="4">
-              <el-button color="#626aef" :disabled="isShowSystemRoleRule" @click="queryMessage"
-                class="margin-left-10">查询</el-button>
-            </el-col>
-            
-            <el-col :span="4">
-              <el-tooltip effect="dark" content="delete(刪除所有）" placement="top">
-                <el-popconfirm width="220" confirm-button-text="确定" cancel-button-text="取消"
-                  icon-color="#626AEF" title="确定要删除所有记录吗？" @confirm="deleteAll">
-                  <template #reference>
-                    <el-button type="warning" icon="Delete"></el-button>
-                  </template>
-                </el-popconfirm>
-              </el-tooltip>
-            </el-col>
+            <el-input type="textarea" v-model="inputText" :disabled="isShowSystemRoleRule"
+              placeholder="请输入查询内容" rows="2" class="input-text"></el-input>
           </el-form-item>
+          <div>
+            <el-button color="#626aef" :disabled="isShowSystemRoleRule" @click="queryMessage"
+            >查询</el-button>
+            <el-tooltip effect="dark" content="delete(刪除所有）" placement="top">
+              <el-popconfirm width="220" confirm-button-text="确定" cancel-button-text="取消"
+                icon-color="#626AEF" title="确定要删除所有记录吗？" @confirm="deleteAll">
+                <template #reference>
+                  <el-button type="warning" icon="Delete"></el-button>
+                </template>
+              </el-popconfirm>
+            </el-tooltip>
+          </div>
         </el-form>
       </el-col>
     </el-row>
@@ -170,6 +165,13 @@ export default {
       }
     },
     addSystemRole() {
+      if (!this.systemRoleContent.content) {
+        ElMessage({
+          message: '请输入系统角色规则内容',
+          type: 'warning',
+        })
+        return
+      }
       this.messageList.push(this.systemRoleContent);
       this.isShowSystemRoleRule = false;
     },
@@ -219,5 +221,9 @@ export default {
 
 .margin-left-10 {
   margin-left: 10px;
+}
+
+.input-text {
+  font-size: 16px;
 }
 </style>
