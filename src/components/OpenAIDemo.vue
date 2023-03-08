@@ -92,14 +92,16 @@
 
 <script>
 // const { Configuration, OpenAIApi } = require("openai");
-import { Configuration, OpenAIApi } from 'openai'
+// import { Configuration, OpenAIApi } from 'openai'
 import { ElMessage } from 'element-plus'
+import chatAPI from '/src/api/chatAPI.js'
+
 
 export default {
   name: "OpenAIDemo",
   data() {
     return {
-      api_key: "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", // API密钥
+      api_key: "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", // API密钥
       systemRoleContent: {
         role: "system",
         content: "",
@@ -131,7 +133,6 @@ export default {
       return {
         model: "gpt-3.5-turbo",
         messages: this.messageList,
-        temperature: 0,
         max_tokens: 100,
       }
     },
@@ -140,26 +141,38 @@ export default {
         if (!this.inputText) return;
         
         const params = this.setParamsData()
+        console.log('params', params);
         this.inputText = '';
         this.isLoading = true;
 
-        const configuration = new Configuration({
+        const response = await chatAPI({
           apiKey: this.api_key,
+          messages: params.messages
         });
-        const openAi = new OpenAIApi(configuration);
-        const response = await openAi.createChatCompletion(params);
 
-        console.log("response>>>", response);
+      const data = await response.json();
+      console.log('data>>>', data);
+      if (response.status !== 200) {
+        throw data.error || new Error(`Request failed with status ${response.status}`);
+      }
 
-        if (response.status === 200) {
-          const data = response.data.choices[0];
-          this.messageList.push(data.message);
-          this.outputText = data.message.content;
-        }
+        // const configuration = new Configuration({
+        //   apiKey: this.api_key,
+        // });
+        // const openAi = new OpenAIApi(configuration);
+        // const response = await openAi.createChatCompletion(params);
+
+        // console.log("response>>>", response);
+
+        // if (response.status === 200) {
+        //   const data = response.data.choices[0];
+        //   this.messageList.push(data.message);
+        //   this.outputText = data.message.content;
+        // }
         console.log("this.messageList>>>", this.messageList);
         this.isLoading = false;
       } catch (error) {
-        console.log("error>>>>", error);
+        console.log("3>>>>", error);
         ElMessage.error(error)
         this.isLoading = false;
       }
